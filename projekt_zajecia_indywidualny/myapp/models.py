@@ -33,6 +33,9 @@ class Osoba(models.Model):
     
     class Meta:
         ordering = ["nazwisko"]
+        permissions = [
+            ("view_person_other_owner", "Pozwala zobaczyć modele Osoba innych właścicieli"),
+        ]
         verbose_name_plural = "Osoby"
         verbose_name = "Osoba"
 class Stanowisko(models.Model):
