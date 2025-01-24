@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Osoba, Person, Stanowisko, Team
 from .serializers import OsobaSerializer, PersonSerializer, StanowiskoSerializer
+from django.http import HttpResponse, Http404
+import datetime
 
 # Create your views here.
 @api_view(['GET', 'POST'])    
@@ -64,7 +66,29 @@ def stanowisko_detail(request, pk):
         stanowisko.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+def welcome_view(request):
+    now = datetime.datetime.now()
+    html = f"""
+        <html><body>
+        Witaj użytkowniku! </br>
+        Aktualna data i czas na serwerze: {now}.
+        </body></html>"""
+    return HttpResponse(html)
+def person_list_html(request):
+    # pobieramy wszystkie obiekty Person z bazy poprzez QuerySet
+    persons = Person.objects.all()
+    return render(request, "person/list.html", {'persons': persons})
 
+    
+def person_detail_html(request, id):
+    # pobieramy konkretny obiekt Person
+    try:
+        person = Person.objects.get(id=id)
+    except Person.DoesNotExist:
+        raise Http404("Obiekt Person o podanym id nie istnieje")
+    return render(request,
+                  "person/detail.html",
+                  {'person': person})
 # określamy dostępne metody żądania dla tego endpointu
 @api_view(['GET'])
 def person_list(request):
