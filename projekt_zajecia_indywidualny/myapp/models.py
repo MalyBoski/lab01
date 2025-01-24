@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import date
 
 
 # deklaracja statycznej listy wyboru do wykorzystania w klasie modelu
@@ -25,19 +25,24 @@ class Osoba(models.Model):
     nazwisko = models.CharField(max_length=60, blank = False, null = False)
     plec = models.IntegerField(choices=PLCIE.choices, default=PLCIE.choices[2][0])
     stanowisko = models.ForeignKey('Stanowisko', on_delete = models.CASCADE)
-    data_dodania = models.DateField(auto_now_add = True, editable = False)
+    data_dodania = models.DateField(default = date.today, blank=False, null=False)
     
     def __str__(self):
         return f'{self.imie} {self.nazwisko}' 
     
     class Meta:
         ordering = ["nazwisko"]
+        verbose_name_plural = "Osoby"
+        verbose_name = "Osoba"
 class Stanowisko(models.Model):
     nazwa = models.CharField(max_length=80, blank = False, null = False)
     opis = models.TextField(blank = False, null = False)
     
     def __str__(self):
         return self.nazwa
+    class Meta:
+        verbose_name_plural = "Stanowiska"
+        verbose_name = "Stanowisko"
 class Team(models.Model):
     name = models.CharField(max_length=60)
     country = models.CharField(max_length=2)
