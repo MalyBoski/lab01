@@ -13,6 +13,7 @@ import datetime
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.auth import logout
+from django.shortcuts import get_object_or_404
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -142,6 +143,15 @@ class TeamDetail(APIView):
         team = self.get_object(pk)
         team.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+def Team_list_html(request):
+    teams = Team.objects.all()
+    return render(request, "team/list.html", {"teams": teams})
+
+# Widok szczegółów pojedynczego obiektu w formacie HTML
+def Team_detail_html(request, id):
+    team = get_object_or_404(Team, pk=id)
+    return render(request, "team/detail.html", {"team": team})
 # określamy dostępne metody żądania dla tego endpointu
 @api_view(['GET'])
 def person_list(request):
